@@ -50,3 +50,4 @@ spec:
 # ...
 #
 # LoadBalancer quando criado o CloudProvider ja cria um ip externo pra ser utilizado (mais utilizado para CloudProviders)
+# Não funciona no kind :( 
