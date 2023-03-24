@@ -17,4 +17,7 @@ spec:
     spec:
       containers:
         - name: nginxserver
-          image: "nginx"
+          image: nginx:latest
+
+# template: define como os pods serão criados.
+# Olhe pod.yaml

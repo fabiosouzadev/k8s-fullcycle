@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxserver-service
+spec:
+  selector:
+    app: nginxserver
+  type: ClusterIP
+  ports:
+  - name: nginxserver-service
+    protocol: TCP
+    port: 8080
+    targetPort: 80
+
+### DEFS ###
+# ...      #
+#   selector:
+#     app: nginxserver
+# ... 
+# selector => define onde a service será aplicada 
+# no exemplo acima no app nginxserver definido no deployment.yaml e no replicaset.yaml ;)
+
+# port => porta do servico
+# targetPort => porta do conteiner
+# ex: kubectl port-forward services/nginxserver-service 9000:8080
+# a porta 9000 do localhost => 8080 service => 80 do container (nginx)
+      #
+
+###### OUTROS TIPOS DE SERVICES ####
+### NodePort ###
+
+# ... 
+# spec:
+# ...
+#  type: NodePort
+# ...
+#  - name: nginxserver-service
+#    protocol: TCP
+#    port: 8080
+#    targetPort: 80
+#    nodePort: 30001  
+#
+# portas de 30000 até 32767 -> acesso (IP NODE) + (PORT)  acessa este servico. 
+
+### LoadBalancer ###
+# ... 
+# spec:
+# ...
+#  type: LoadBalancer
+# ...
+#
+# LoadBalancer quando criado o CloudProvider ja cria um ip externo pra ser utilizado (mais utilizado para CloudProviders)
