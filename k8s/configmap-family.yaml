@@ -1,0 +1,7 @@
+# https://kubernetes.io/docs/concepts/configuration/configmap/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: goserver-family-env
+data:
+  members: "Fabio, Fernanda, Giovana, João Miguel"

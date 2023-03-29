@@ -17,10 +17,21 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "fabiosouzadev/k8s-fullcycle:v3"
+          image: "fabiosouzadev/k8s-fullcycle:v6"
           envFrom:
             - configMapRef:
                 name: goserver-env
+          volumeMounts:
+            - mountPath: "/go/myfamily"
+              name: config
+
+      volumes:
+        - name: config
+          configMap:
+            name: goserver-family-env
+            items:
+              - key: members
+                path: "family.txt"
 
 # template: define como os pods serão criados.
 # Olhe pod.yaml
@@ -48,9 +59,28 @@ spec:
 #         name: goserver-env
 #         key: IDADE
 # ....
-#### USANDO envFrom (pegando todas as variaveis do ConfigMap)
+#### USANDO envFrom (pegando todas as variaveis do ConfigMap) ####
 # ....
-# envFrom:
-#   - configMapRef:
-#       name: goserver-env
+# spec
+#   containers:
+# ...
+#     envFrom:
+#       - configMapRef:
+#           name: goserver-env
 # ....
+#### Injetando ConfigMap ####
+#....
+# spec
+#   containers:
+# ....
+#     volumeMounts:
+#       - mountPath: "/go/myfamily"
+#         name: config
+# ....
+#   volumes:
+#     - name: config
+#       configMap:
+#         name: goserver-family-env
+#         items:
+#           - key: members
+#           path: "family.txt"
