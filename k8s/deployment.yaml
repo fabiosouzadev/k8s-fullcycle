@@ -34,8 +34,7 @@ spec:
                 path: "family.txt"
 
 # template: define como os pods serão criados.
-# Olhe pod.yaml
-              
+# Olhe pod.yaml 
 ### Variaveis de ambiente ###
 ### USANDO env #####
 # ....
@@ -44,7 +43,12 @@ spec:
 #     value: "Fabio"
 #   - name: IDADE
 #     value: "36"
-# ...
+# ....
+# EXEC
+# $ kubectl apply -f k8s/configmap.yaml
+# $ kubectl delete deployments.app goserver
+# $ kubectl apply -f k8s/deployment.yaml
+
 ## Variaveis de ambiente com ConfigMap ##
 # ....
 # env:
@@ -59,6 +63,11 @@ spec:
 #         name: goserver-env
 #         key: IDADE
 # ....
+# EXEC
+# $ kubectl apply -f k8s/configmap.yaml
+# $ kubectl delete deployments.app goserver
+# $ kubectl apply -f k8s/deployment.yaml
+
 #### USANDO envFrom (pegando todas as variaveis do ConfigMap) ####
 # ....
 # spec
@@ -68,6 +77,11 @@ spec:
 #       - configMapRef:
 #           name: goserver-env
 # ....
+# EXEC
+# $ kubectl apply -f k8s/configmap.yaml
+# $ kubectl delete deployments.app goserver
+# $ kubectl apply -f k8s/deployment.yaml
+
 #### Injetando ConfigMap ####
 #....
 # spec
@@ -83,4 +97,9 @@ spec:
 #         name: goserver-family-env
 #         items:
 #           - key: members
-#           path: "family.txt"
+#             path: "family.txt"
+# ....
+# EXEC
+# $ kubectl apply -f k8s/configmap-family.yaml
+# $ kubectl delete deployments.app goserver
+# $ kubectl apply -f k8s/deployment.yaml
