@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "nginxserver"
+  name: "goserver"
   labels:
-    app: "nginxserver"
+    app: "goserver"
 spec:
   containers:
-    - name: nginxserver
-      image: "nginx"
+    - name: goserver
+      image: fabiosouzadev/k8s-fullcycle

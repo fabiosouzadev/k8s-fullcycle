@@ -1,23 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginxserver
+  name: goserver
   labels:
-    app: nginxserver
+    app: goserver
 spec:
   selector:
     matchLabels:
-      app: nginxserver
-  replicas: 2
+      app: goserver
+  replicas: 1
   template:
     metadata:
-      name: "nginxserver"
+      name: "goserver"
       labels:
-        app: "nginxserver"
+        app: "goserver"
     spec:
       containers:
-        - name: nginxserver
-          image: nginx:latest
+        - name: goserver
+          image: "fabiosouzadev/k8s-fullcycle:v3"
+          env:
+            - name: NOME
+              value: "Fabio"
+            - name: IDADE
+              value: "36"
 
 # template: define como os pods serão criados.
 # Olhe pod.yaml
+              
+### Variaveis de ambiente ###
+# ....
+# env:
+#   - name: NAME
+#     value: "Fabio"
+#   - name: TEST
+#     value: "testando ..."
+# ...

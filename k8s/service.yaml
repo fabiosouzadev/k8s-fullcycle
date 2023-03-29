@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginxserver-service
+  name: goserver-service
 spec:
   selector:
-    app: nginxserver
+    app: goserver
   type: ClusterIP
   ports:
-  - name: nginxserver-service
+  - name: goserver-service
     protocol: TCP
     port: 8080
-    targetPort: 80
+    targetPort: 5000
 
 ### DEFS ###
 # ...      #
@@ -49,5 +49,5 @@ spec:
 #  type: LoadBalancer
 # ...
 #
-# LoadBalancer quando criado o CloudProvider ja cria um ip externo pra ser utilizado (mais utilizado para CloudProviders)
+# LoadBalancer quando usado em um CloudProvider, é criado aautomaticamente um ip externo pra ser utilizado (mais utilizado para CloudProviders)
 # Não funciona no kind :( 
