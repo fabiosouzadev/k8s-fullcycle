@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "fabiosouzadev/k8s-fullcycle:v7"
+          image: "fabiosouzadev/k8s-fullcycle"
           envFrom:
             - configMapRef:
                 name: goserver-env
