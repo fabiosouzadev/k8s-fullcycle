@@ -17,10 +17,12 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "fabiosouzadev/k8s-fullcycle:v6"
+          image: "fabiosouzadev/k8s-fullcycle:v7"
           envFrom:
             - configMapRef:
                 name: goserver-env
+            - secretRef:
+                name: goserver-secret
           volumeMounts:
             - mountPath: "/go/myfamily"
               name: config
@@ -101,5 +103,19 @@ spec:
 # ....
 # EXEC
 # $ kubectl apply -f k8s/configmap-family.yaml
+# $ kubectl delete deployments.app goserver
+# $ kubectl apply -f k8s/deployment.yaml
+
+#### Secret ####
+# ....
+# spec
+#   containers:
+# ...
+#     envFrom:
+#       - secretRef:
+#           name: goserver-secret
+# ....
+# EXEC
+# $ kubectl apply -f k8s/secret.yaml
 # $ kubectl delete deployments.app goserver
 # $ kubectl apply -f k8s/deployment.yaml

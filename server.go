@@ -11,6 +11,7 @@ import (
 func main() {
 	http.HandleFunc("/", Hello)
 	http.HandleFunc("/family", ConfigMap)
+	http.HandleFunc("/secret", Secret) 
 	http.ListenAndServe(":5000", nil)
 }
 
@@ -29,3 +30,11 @@ func ConfigMap(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprintf(w, "My family: %s.", string(data))
 }
+func Secret(w http.ResponseWriter, r *http.Request) {
+	// w.Write([]byte("<h1> Hello Full Cycle</h1>"))
+	user     := os.Getenv("USER")
+	password := os.Getenv("PASSWORD")
+
+    fmt.Fprintf(w, "Hello, User:  %s. Password %s (ano/anos)", user, password)
+}
+
