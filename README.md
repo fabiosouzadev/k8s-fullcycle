@@ -15,6 +15,7 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
   - [Resources](#resources)
   - [HPA](#hpa)
     - [Aplicando Hpa](#aplicando-hpa)
+- [🧪Stress Test](#stress-test)
 
 ## 💻Pré-requisitos
 
@@ -192,8 +193,49 @@ spec:
   targetCPUUtilizationPercentage: 25
 ```
 
-#### Aplicando hpa
+### Aplicando hpa
+```yml
+# k8s/hpa.yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: goserver-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: goserver
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 25
+```
 
 ```bash
 kubectl apply -f k8s/hpa.yaml
+```
+
+## 🧪Stress Test
+> Stress Test com [fortio](https://github.com/fortio/fortio)
+> Test para testar hpa
+```
+kubectl run -it fortio --rm --image=fortio/fortio -- load -qps 800 -t 200s -c 50 "http://[nome-do-servico]:[porta-do-servico]/healthcheck"
+```
+
+```yaml
+#kubectl apply -f k8s/fortio.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  traffic-generator
+  labels:
+    app: traffic-generator
+spec:
+  containers:
+  - name: fortio
+    image: fortio/fortio
+    args: ["load", "-t", "0", "-qps", "800","[nome-do-servico]:[porta-do-servico]/healthcheck"]
+
+```
+```bash
+kubectl apply -f k8s/fortio.yaml
 ```
