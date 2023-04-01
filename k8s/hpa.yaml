@@ -8,5 +8,5 @@ spec:
     kind: Deployment
     name: goserver
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 50 
   targetCPUUtilizationPercentage: 25

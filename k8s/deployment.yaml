@@ -22,10 +22,10 @@ spec:
           resources:
             requests:
               cpu: "0.05"
-              memory: 5Mi
+              memory: 20Mi
             limits:
-              cpu: "0.05"
-              memory: 5Mi
+              cpu: "0.1"
+              memory: 25Mi
 
           startupProbe:
             httpGet:
