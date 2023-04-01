@@ -2,19 +2,22 @@
 
 # K8s FullCycle
 
-Este repositório contém exemplos para apaprendizado `Kubernetes` do curso FullCycle.
+Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCycle.
+
 </div>
 
 ## Navegação no repositório
+
 - [Pré-requisitos](#pré-requisitos)
 - [Probes](#probes)
-- [Resources e HPA](#resources-e-hpa)]
-    - [Aplicando o matrics-server](#aplicando-o-metrics-server)
-    - [Resources](#resources)
-    - [HPA](#hpa)
-        - [Aplicando Hpa](#aplicando-hpa)
+- [Resources e HPA](#resources-e-hpa)
+  - [Aplicando o matrics-server](#aplicando-o-metrics-server)
+  - [Resources](#resources)
+  - [HPA](#hpa)
+    - [Aplicando Hpa](#aplicando-hpa)
 
 ## 💻Pré-requisitos
+
 - [Docker](https://www.docker.com/)
 - [DockerHub](https://hub.docker.com/)
 - [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
@@ -23,15 +26,19 @@ Este repositório contém exemplos para apaprendizado `Kubernetes` do curso Full
 ## Trabalhando com a imagem
 
 ### 🚀Build serviço go
+
 ```bash
 docker build -t k8s-fullcycle .
 ```
 
-### ☕Rodar servico go 
+### ☕Rodar servico go
+
 ```bash
 docker run --rm -p 80:80 k8s-fullcycle
 ```
+
 ### 🚀Subir imagem para DockerHub
+
 ```bash
 docker push <seu-user-no-dockerhub>/k8s-fullcycle
 ```
@@ -39,21 +46,29 @@ docker push <seu-user-no-dockerhub>/k8s-fullcycle
 ## Rodando o Kind
 
 ### Criando o cluster
+
 ```bash
 kind create cluster --config=k8s/kind.yaml --name=fullcycle
 kubectl cluster-info --context kind-fullcycle
 ```
+
 ### Aplicando o arquivo de deployment
+
 ```bash
 kubectl apply -f k8s/deployment.yaml
 ```
+
 ### Aplicando o service
+
 ```bash
 kubectl apply -f k8s/service.yaml
 ```
+
 ...
 ...
+
 ## Probes
+
 ```yml
 ### StartupProbe --> roda apenas 1 vez na inicialização do container ####
 ....
@@ -73,6 +88,7 @@ EXEC
 $ kubectl delete deployments.app goserver
 $ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
 ```
+
 ```yml
 ### LivenessProbe --> conteiner saudavel ####
 ....
@@ -117,12 +133,16 @@ $ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
 
 ## Resources e HPA
 
-### Aplicando o metrics-server 
+### Aplicando o metrics-server
+
 > (Com patch pra funcionar no kind)
+
 ```bash
 kubectl apply -f k8s/metrics-server.yaml
 ```
+
 ### Resources
+
 ```yml
 ...
 spec:
@@ -130,30 +150,32 @@ spec:
     ...
     resources:
       requests:
-        cpu: 100m
+        cpu: 100m # ou "0.1" => 0.1 vCPU
         memory: 128Mi
       limits:
         cpu: 250m
         memory: 256Mi
     ...
 ```
+
 `requests` é referente ao minimo de recursos provisionados para o container.
-`limits` se refere a quantidade máxima de recursos que um container pode utilizar.
+`limits` se refere a quantidade máxima de recursos que um container deve utilizar.
 
-Para cpu a unidade de medida é o 
+Para cpu a unidade de medida é o
 
-> vCPU  = 1000m (milicores)
-> 1/2 vCPU = 500m ou 0.5vCPU
-
+> vCPU = 1000m (milicores)
+> 1/2 vCPU = 500m ou 0.5 vCPU
 
 Para memory a unidade é Mi = Mb
 
 > 20Mi = 20Mb
 
-Caso não existam rescursos suficientes, o pod ficará em `PENDING` até o que o cluster tenha recursos disponivel para provisionar. 
+Caso não existam rescursos suficientes, o pod ficará em `PENDING` até o que o cluster tenha recursos disponivel para provisionar.
 
 ### HPA
+
 > Horizontal Pod Autoscaling
+
 ```yml
 # k8s/hpa.yaml
 apiVersion: autoscaling/v1
@@ -169,8 +191,9 @@ spec:
   maxReplicas: 5
   targetCPUUtilization: 25
 ```
+
 #### Aplicando hpa
+
 ```bash
 kubectl apply -f k8s/hpa.yaml
 ```
-
