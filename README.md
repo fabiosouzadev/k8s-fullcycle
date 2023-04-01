@@ -189,7 +189,7 @@ spec:
     name: goserver
   minReplicas: 1
   maxReplicas: 5
-  targetCPUUtilization: 25
+  targetCPUUtilizationPercentage: 25
 ```
 
 #### Aplicando hpa
