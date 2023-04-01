@@ -217,7 +217,9 @@ kubectl apply -f k8s/hpa.yaml
 ## 🧪Stress Test
 > Stress Test com [fortio](https://github.com/fortio/fortio)
 > Test para testar hpa
-```
+
+
+```bash
 kubectl run -it fortio --rm --image=fortio/fortio -- load -qps 800 -t 200s -c 50 "http://[nome-do-servico]:[porta-do-servico]/healthcheck"
 ```
 
