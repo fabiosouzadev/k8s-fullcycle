@@ -8,7 +8,11 @@ Este repositório contém exemplos para apaprendizado `Kubernetes` do curso Full
 ## Navegação no repositório
 - [Pré-requisitos](#pré-requisitos)
 - [Probes](#probes)
-- [Resources](#resources)
+- [Resources e HPA](#resources-e-hpa)]
+    - [Aplicando o matrics-server](#aplicando-o-metrics-server)
+    - [Resources](#resources)
+    - [HPA](#hpa)
+        - [Aplicando Hpa](#aplicando-hpa)
 
 ## 💻Pré-requisitos
 - [Docker](https://www.docker.com/)
@@ -48,10 +52,6 @@ kubectl apply -f k8s/deployment.yaml
 kubectl apply -f k8s/service.yaml
 ```
 ...
-### Aplicando o metrics-server (Com patch pra funcionar no kind)
-```bash
-kubectl apply -f k8s/metrics-server.yaml
-```
 ...
 ## Probes
 ```yml
@@ -90,6 +90,9 @@ spec
       initialDelaySeconds: 10 -> tempo de espera pra começar a verificação
 ....
       (Caso a requisição tenha problemas o container é reiniciado)
+EXEC
+$ kubectl delete deployments.app goserver
+$ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
 ```
 
 ```yml
@@ -111,4 +114,63 @@ EXEC
 $ kubectl delete deployments.app goserver
 $ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
 ```
-## Resources
+
+## Resources e HPA
+
+### Aplicando o metrics-server 
+> (Com patch pra funcionar no kind)
+```bash
+kubectl apply -f k8s/metrics-server.yaml
+```
+### Resources
+```yml
+...
+spec:
+  containers:
+    ...
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+    ...
+```
+`requests` é referente ao minimo de recursos provisionados para o container.
+`limits` se refere a quantidade máxima de recursos que um container pode utilizar.
+
+Para cpu a unidade de medida é o 
+
+> vCPU  = 1000m (milicores)
+> 1/2 vCPU = 500m ou 0.5vCPU
+
+
+Para memory a unidade é Mi = Mb
+
+> 20Mi = 20Mb
+
+Caso não existam rescursos suficientes, o pod ficará em `PENDING` até o que o cluster tenha recursos disponivel para provisionar. 
+
+### HPA
+> Horizontal Pod Autoscaling
+```yml
+# k8s/hpa.yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: goserver-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: goserver
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilization: 25
+```
+#### Aplicando hpa
+```bash
+kubectl apply -f k8s/hpa.yaml
+```
+
