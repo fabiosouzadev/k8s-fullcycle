@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "fabiosouzadev/k8s-fullcycle:v12"
+          image: "fabiosouzadev/k8s-fullcycle:v13"
 
           resources:
             requests:
@@ -27,28 +27,28 @@ spec:
               cpu: "0.3"
               memory: 5Mi
 
-          # startupProbe:
-          #   httpGet:
-          #     path: /healthcheck
-          #     port: 5000
-          #   periodSeconds: 3
-          #   failureThreshold: 10
-          #   initialDelaySeconds: 10
-          #
-          # readinessProbe:
-          #   httpGet:
-          #     path: /healthcheck
-          #     port: 5000
-          #   periodSeconds: 3
-          #   failureThreshold: 1
-          #   timeoutSeconds: 1
-          #
-          # livenessProbe:
-          #   httpGet:
-          #     path: /healthcheck
-          #     port: 5000
-          #   periodSeconds: 5
-          #   failureThreshold: 1
+          startupProbe:
+            httpGet:
+              path: /healthcheck
+              port: 5000
+            periodSeconds: 3
+            failureThreshold: 10
+            initialDelaySeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 5000
+            periodSeconds: 3
+            failureThreshold: 1
+            timeoutSeconds: 1
+
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 5000
+            periodSeconds: 5
+            failureThreshold: 1
 
           envFrom:
             - configMapRef:
