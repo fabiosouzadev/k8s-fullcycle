@@ -9,6 +9,19 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
 ## Navegação no repositório
 
 - [Pré-requisitos](#pré-requisitos)
+- [Rodando o Kind](#rodando-o-kind)
+    - [Criando o cluster](#criando-o-cluster)
+- [Trabalhando com a imagem](#trabalhando-com-a-imagem)
+    - [🚀 Build go server](#build-go-server)
+    - [☕Rodar servico go](#rodar-servico-go)
+    - [🚀Subir imagem para DockerHub](#subir-imagem-para-dockerHub)
+- [Pods](#pods)
+- [Replicaset](#replicaset)
+- [Deployment](#deployment)
+- [Services](#services)
+- [Variaveis de ambiente](#variaveis-de-ambiente)
+    - [ConfigMap](#configmap)
+    - [Secrets](#secrets)
 - [Probes](#probes)
 - [Resources e HPA](#resources-e-hpa)
   - [Aplicando o matrics-server](#aplicando-o-metrics-server)
@@ -24,53 +37,51 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
 - [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
+## Rodando o Kind
+### Criando o cluster
+```bash
+kind create cluster --config=k8s/kind.yaml --name=[nome-do-cluster]
+kubectl cluster-info --context kind-[nome-do-cluster]
+```
+
 ## Trabalhando com a imagem
-
-### 🚀Build serviço go
-
+### 🚀Build go server
 ```bash
-docker build -t k8s-fullcycle .
+docker build -t k8s-fullcycle:v[version]  k8s-fullcycle:latest .
 ```
-
 ### ☕Rodar servico go
-
 ```bash
-docker run --rm -p 80:80 k8s-fullcycle
+docker run --rm -p 80:80 k8s-fullcycle:v[version]
 ```
-
 ### 🚀Subir imagem para DockerHub
 
 ```bash
 docker push <seu-user-no-dockerhub>/k8s-fullcycle
 ```
 
-## Rodando o Kind
-
-### Criando o cluster
-
-```bash
-kind create cluster --config=k8s/kind.yaml --name=fullcycle
-kubectl cluster-info --context kind-fullcycle
-```
-
+## Deployment
 ### Aplicando o arquivo de deployment
 
 ```bash
 kubectl apply -f k8s/deployment.yaml
 ```
 
+## Services
 ### Aplicando o service
 
 ```bash
 kubectl apply -f k8s/service.yaml
 ```
 
-...
-...
+## Variaveis de ambiente
+
+### ConfigMap
+
+### Secrets
 
 ## Probes
 
-```yml
+```yaml
 ### StartupProbe --> roda apenas 1 vez na inicialização do container ####
 ....
 spec
@@ -90,7 +101,7 @@ $ kubectl delete deployments.app goserver
 $ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
 ```
 
-```yml
+```yaml
 ### LivenessProbe --> conteiner saudavel ####
 ....
 spec
@@ -112,7 +123,7 @@ $ kubectl delete deployments.app goserver
 $ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
 ```
 
-```yml
+```yaml
 ### ReadinessProbe --> conteiner pronto pra receber conexões ####
 ....
 spec
@@ -144,7 +155,7 @@ kubectl apply -f k8s/metrics-server.yaml
 
 ### Resources
 
-```yml
+```yaml
 ...
 spec:
   containers:
@@ -177,7 +188,7 @@ Caso não existam rescursos suficientes, o pod ficará em `PENDING` até o que o
 
 > Horizontal Pod Autoscaling
 
-```yml
+```yaml
 # k8s/hpa.yaml
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -194,7 +205,7 @@ spec:
 ```
 
 ### Aplicando hpa
-```yml
+```yaml
 # k8s/hpa.yaml
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
