@@ -23,6 +23,9 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
     - [ConfigMap](#configmap)
     - [Secrets](#secrets)
 - [Probes](#probes)
+    - [LivenessProbe](#livenessProbe)
+    - [ReadinessProbe](#readinessProbe)
+    - [StartupProbe](#startupProbe)
 - [Resources e HPA](#resources-e-hpa)
   - [Aplicando o matrics-server](#aplicando-o-metrics-server)
   - [Resources](#resources)
@@ -81,26 +84,7 @@ kubectl apply -f k8s/service.yaml
 
 ## Probes
 
-```yaml
-### StartupProbe --> roda apenas 1 vez na inicialização do container ####
-....
-spec
-  containers:
-...
-    startupProbe:
-      httpGet:
-        path: /healthcheck
-        port: 5000  -> porta do container
-      periodSeconds: 3    -> teste de X em X segundos
-      failureThreshold: 30 -> tentativas de verificacao do healthcheck
-      initialDelaySeconds: 10 -> tempo de espera pra começar a verificação
-....
-      (Nesse caso ocorrera a verificacao em até 90 segundos e se estiver ok - readinessProbe e livenessProbe começam a funcionar)
-EXEC
-$ kubectl delete deployments.app goserver
-$ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
-```
-
+### LivenessProbe
 ```yaml
 ### LivenessProbe --> conteiner saudavel ####
 ....
@@ -122,7 +106,7 @@ EXEC
 $ kubectl delete deployments.app goserver
 $ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
 ```
-
+### ReadinessProbe
 ```yaml
 ### ReadinessProbe --> conteiner pronto pra receber conexões ####
 ....
@@ -142,9 +126,28 @@ EXEC
 $ kubectl delete deployments.app goserver
 $ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
 ```
-
+### StartupProbe
+```yaml
+### StartupProbe --> roda apenas 1 vez na inicialização do container ####
+....
+spec
+  containers:
+...
+    startupProbe:
+      httpGet:
+        path: /healthcheck
+        port: 5000  -> porta do container
+      periodSeconds: 3    -> teste de X em X segundos
+      failureThreshold: 30 -> tentativas de verificacao do healthcheck
+      initialDelaySeconds: 10 -> tempo de espera pra começar a verificação
+....
+      (Nesse caso ocorrera a verificacao em até 90 segundos e se estiver ok - readinessProbe e livenessProbe começam a funcionar)
+```
+```bash
+ kubectl delete deployments.app goserver
+ kubectl apply -f k8s/deployment.yaml && kubectl get pods -w
+```
 ## Resources e HPA
-
 ### Aplicando o metrics-server
 
 > (Com patch pra funcionar no kind)
