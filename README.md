@@ -200,7 +200,7 @@ spec:
     kind: Deployment
     name: goserver
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 30
   targetCPUUtilizationPercentage: 25
 ```
 
@@ -231,7 +231,7 @@ kubectl apply -f k8s/hpa.yaml
 
 
 ```bash
-kubectl run -it fortio --rm --image=fortio/fortio -- load -qps 800 -t 200s -c 50 "http://[nome-do-servico]:[porta-do-servico]/healthcheck"
+kubectl run -it fortio --rm --image=fortio/fortio -- load -qps 800 -t 200s -c 50 "http://[nome-do-service]:[porta-do-service]/healthcheck"
 ```
 
 ```yaml
@@ -246,7 +246,7 @@ spec:
   containers:
   - name: fortio
     image: fortio/fortio
-    args: ["load", "-t", "0", "-qps", "800","[nome-do-servico]:[porta-do-servico]/healthcheck"]
+    args: ["load", "-t", "0", "-qps", "1800", "-c", "50", goserver-service:8080/healthcheck"]
 
 ```
 ```bash
