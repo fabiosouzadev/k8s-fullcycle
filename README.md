@@ -32,6 +32,9 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
   - [HPA](#hpa)
     - [Aplicando Hpa](#aplicando-hpa)
 - [🧪Stress Test](#stress-test)
+    - [Fortio](#fortio)
+- [Statefulset](#statefulset) 
+
 
 ## 💻Pré-requisitos
 
@@ -232,7 +235,7 @@ kubectl apply -f k8s/hpa.yaml
 > Stress Test com [fortio](https://github.com/fortio/fortio)
 > Test para testar hpa
 
-
+### Fortio
 ```bash
 kubectl run -it fortio --rm --image=fortio/fortio -- load -qps 800 -t 200s -c 50 "http://[nome-do-service]:[porta-do-service]/healthcheck"
 ```
@@ -255,3 +258,4 @@ spec:
 ```bash
 kubectl apply -f k8s/fortio.yaml
 ```
+## Statefulset
