@@ -33,8 +33,8 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
     - [Aplicando Hpa](#aplicando-hpa)
 - [🧪Stress Test](#stress-test)
     - [Fortio](#fortio)
-- [Statefulset](#statefulset) 
-
+- [Statefulset e volumes persistentes](#statefulset-e-volumes-persistentes)
+    - [PersistentVolume](#persistentvolume)
 
 ## 💻Pré-requisitos
 
@@ -258,4 +258,32 @@ spec:
 ```bash
 kubectl apply -f k8s/fortio.yaml
 ```
-## Statefulset
+## Statefulset e volumes persistentes
+### PersistentVolume
+>A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes. It is a resource in the cluster just like a node is a cluster resource. PVs are volume plugins like Volumes, but have a lifecycle independent of any individual Pod that uses the PV. This API object captures the details of the implementation of the storage, be that NFS, iSCSI, or a cloud-provider-specific storage system.
+
+Na tradução livre:
+
+> Um PersistentVolume (PV) é uma parte do armazenamento no cluster que foi provisionado por um administrador ou provisionado dinamicamente usando classes de armazenamento. É um recurso no cluster, assim como um nó é um recurso de cluster. PVs são plug-ins de volume como Volumes, mas têm um ciclo de vida independente de qualquer Pod individual que usa o PV. Esse objeto API captura os detalhes da implementação do armazenamento, seja NFS, iSCSI ou um sistema de armazenamento específico do provedor de nuvem.
+
+```yaml
+#https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv0003
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /tmp
+    server: 172.17.0.2
+```
