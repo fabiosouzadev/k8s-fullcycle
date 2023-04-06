@@ -9,4 +9,4 @@ spec:
     name: goserver
   minReplicas: 1
   maxReplicas: 30
-  targetCPUUtilizationPercentage: 25
+  targetCPUUtilizationPercentage: 75

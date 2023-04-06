@@ -58,6 +58,8 @@ spec:
           volumeMounts:
             - mountPath: "/go/myfamily"
               name: config
+            - mountPath: "/go/pvc"
+              name: goserver-volume
 
       volumes:
         - name: config
@@ -66,7 +68,9 @@ spec:
             items:
               - key: members
                 path: "family.txt"
-
+        - name: goserver-volume
+          persistentVolumeClaim:
+            claimName: goserver-pvc
 # template: define como os pods serão criados.
 # Olhe pod.yaml 
 ### Variaveis de ambiente ###

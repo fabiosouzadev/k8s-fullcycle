@@ -10,11 +10,6 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
 
 - [Pré-requisitos](#pré-requisitos)
 - [Rodando o Kind](#rodando-o-kind)
-    - [Criando o cluster](#criando-o-cluster)
-- [Trabalhando com a imagem](#trabalhando-com-a-imagem)
-    - [🚀 Build go server](#build-go-server)
-    - [☕Rodar servico go](#rodar-servico-go)
-    - [🚀Subir imagem para DockerHub](#subir-imagem-para-dockerHub)
 - [Pods](#pods)
 - [Replicaset](#replicaset)
 - [Deployment](#deployment)
@@ -35,6 +30,7 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
     - [Fortio](#fortio)
 - [Statefulset e volumes persistentes](#statefulset-e-volumes-persistentes)
     - [PersistentVolume](#persistentvolume)
+    - [PersistentVolumeClaims](#persistentvolumeclaims)
 
 ## 💻Pré-requisitos
 
@@ -44,40 +40,48 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
 ## Rodando o Kind
-### Criando o cluster
 ```bash
+### Criando o cluster
 kind create cluster --config=k8s/kind.yaml --name=[nome-do-cluster]
 kubectl cluster-info --context kind-[nome-do-cluster]
-```
 
 ## Trabalhando com a imagem
 ### 🚀Build go server
-```bash
 docker build -t k8s-fullcycle:v[version]  k8s-fullcycle:latest .
-```
 ### ☕Rodar servico go
-```bash
-docker run --rm -p 80:80 k8s-fullcycle:v[version]
-```
-### 🚀Subir imagem para DockerHub
+# docker run --rm -p 80:80 k8s-fullcycle:v[version]
 
-```bash
+### 🚀Subir imagem para DockerHub
 docker push <seu-user-no-dockerhub>/k8s-fullcycle
+
+### Aplicando o service
+kubectl apply -f k8s/service.yaml
+
+### Aplicando configmaps
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/configmap-family.yaml
+
+### Aplicando secret
+kubectl apply -f k8s/secret.yaml
+
+### Aplicando metrics-server 
+kubectl apply -f k8s/metrics-server.yaml
+
+### Aplicando hpa
+kubectl apply -f k8s/hpa.yaml
+
+### Aplicando persistent-volume-claim
+kubectl apply -f k8s/persistent-volume-claim.yaml
+
+### Aplicando o arquivo de deployment
+kubectl apply -f k8s/deployment.yaml
+
 ```
+
 
 ## Deployment
-### Aplicando o arquivo de deployment
-
-```bash
-kubectl apply -f k8s/deployment.yaml
-```
 
 ## Services
-### Aplicando o service
-
-```bash
-kubectl apply -f k8s/service.yaml
-```
 
 ## Variaveis de ambiente
 
@@ -239,7 +243,7 @@ kubectl apply -f k8s/hpa.yaml
 ```bash
 kubectl run -it fortio --rm --image=fortio/fortio -- load -qps 800 -t 200s -c 50 "http://[nome-do-service]:[porta-do-service]/healthcheck"
 ```
-
+OU
 ```yaml
 #kubectl apply -f k8s/fortio.yaml
 apiVersion: v1
@@ -286,4 +290,25 @@ spec:
   nfs:
     path: /tmp
     server: 172.17.0.2
+```
+### PersistentVolumeClaims
+```yaml
+# k8s/persistent-volume-claim.yaml
+
+# https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: goserver-pvc
+spec:
+  # AKS: default,managed-premium
+  # GKE: standard
+  # EKS: gp2 (custom)
+  # Rook: rook-ceph-block,rook-ceph-fs
+  # storageClassName: default
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
 ```
