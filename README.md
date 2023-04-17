@@ -31,6 +31,8 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
 - [Statefulset e volumes persistentes](#statefulset-e-volumes-persistentes)
     - [PersistentVolume](#persistentvolume)
     - [PersistentVolumeClaims](#persistentvolumeclaims)
+    - [StatefulSet](#statefulset)
+    - [Headless Service](#headless-service)
 
 ## 💻Pré-requisitos
 
@@ -311,4 +313,74 @@ spec:
   resources:
     requests:
       storage: 5Gi
+```
+### Statefulset
+> StatefulSet é o objeto da API usado para gerenciar aplicativos com estado.
+> Usando o exemplo Headless service abaixo, apontando para o mysql (master)
+
+```yaml
+# https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql # has to match .spec.template.metadata.labels
+  serviceName: mysql-h
+  replicas: 3 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: mysql # has to match .spec.selector.matchLabels
+    spec:
+      containers:
+      - name: mysql
+        image: mysql
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: root
+```
+#### Headless service
+> Serviço sem IP, mas utilizando DNS estavel, para endereçamento de apps Stateful
+>Ex: Nesse exemplo o Headless service aponta pra um mysql (Master)
+
+```yaml
+# Headless service for stable DNS entries of StatefulSet members.
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-h
+  labels:
+    app: mysql
+    app.kubernetes.io/name: mysql
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+  clusterIP: None
+  selector:
+    app: mysql
+
+```
+Ex: Nesse exemplo o cliente service aponta pra pods mysql (Slaves)
+```yaml 
+# Client service for connecting to any MySQL instance for reads.
+# For writes, you must instead connect to the primary: mysql-0.mysql.
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-read
+  labels:
+    app: mysql
+    app.kubernetes.io/name: mysql
+    readonly: "true"
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+  selector:
+    app: mysql
+
 ```
