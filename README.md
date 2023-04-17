@@ -320,6 +320,7 @@ spec:
 
 ```yaml
 # https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set
+# k8s/statefulset.yaml
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -347,7 +348,7 @@ spec:
 >Ex: Nesse exemplo o Headless service aponta pra um mysql (Master)
 
 ```yaml
-# Headless service for stable DNS entries of StatefulSet members.
+# k8s/mysql-service-h.yaml
 apiVersion: v1
 kind: Service
 metadata:
