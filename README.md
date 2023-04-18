@@ -33,6 +33,7 @@ Este repositório contém exemplos para aprendizado `Kubernetes` do curso FullCy
     - [PersistentVolumeClaims](#persistentvolumeclaims)
     - [StatefulSet](#statefulset)
     - [Headless Service](#headless-service)
+    - [ServiceAccount e Roles](#serviceaccount-e-roles)
 
 ## 💻Pré-requisitos
 
@@ -385,3 +386,44 @@ spec:
     app: mysql
 
 ```
+
+### ServiceAccount e Roles
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: server
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: server-read
+rules:
+- apiGroups: [""]
+  resources: ["pods","services"]
+  verbs: ["get","watch","list"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get","watch","list"]  
+  
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: server-read-bind
+subjects:
+- kind: ServiceAccount
+  name: server
+  namespace: prod
+roleRef:
+  kind: ClusterRole
+  name: server-read
+  apiGroup: rbac.authorization.k8s.io
+
+```
+
+
